@@ -7,35 +7,44 @@ from typing import List
 def list_to_json(file_path):
     words = open(file_path)
     word_list = words.readlines()
+    scrambles = {}
 
     for count in range(len(word_list)):
-        scrambles = {}
         word = word_list[count].rstrip()
 
         start_index = 0
         end_index = len(word)
         letters = list(word)
-
+        print('------' + word + '-------')
         perms = generate_permutations(letters, start_index, end_index)
-
+        perms = perms.split()
+        if len(perms) < 100:
+            print(perms)
         # create a key for each scramble and add current word as value
+        #print(perms)
+
         for perm in perms:
-            if perm in scrambles:
-                # append
+            perm = list_to_string(perm)
+            if perm in scrambles.keys():
                 scrambles[perm].append(word)
             else:
                 scrambles[perm] = [word]
+
+    print(scrambles)
     return scrambles
 
-def generate_permutations(word, stard_i, end_i) -> List:
-    permutations = []
-    if stard_i==end_i:
-        permutations.append(list_to_string(word))
+def generate_permutations(word, start_i, end_i) -> List:
+    permutations = ''
+    temp = []
+    if start_i==end_i:
+        permutations = list_to_string(word)
     else:
-        for i in range(stard_i,end_i):
-            word[stard_i], word[i] = word[i], word[stard_i]
-            generate_permutations(word, stard_i+1, end_i)
-            word[stard_i], word[i] = word[i], word[stard_i] # backtrack
+        for i in range(start_i,end_i):
+            word[start_i], word[i] = word[i], word[start_i]
+            temp = generate_permutations(word, start_i+1, end_i)
+            permutations = permutations + ' ' + temp
+
+            word[start_i], word[i] = word[i], word[start_i] # backtrack
 
     return permutations
 
@@ -47,10 +56,19 @@ def write_to_file(file_path, text):
     file = open(file_path, 'w')
     file.write(text)
 
+# ===============
+# Environment Variables
+# ===============
+TEST = 0
+PRODUCTION = 1
+FILES = ['words_short.csv', 'words.csv']
 
-# commands
-words = list_to_json(sys.path[0]+'/../data/words.csv')
+# ===============
+# Commands
+# ===============
+file = FILES[PRODUCTION]
+words = list_to_json(sys.path[0]+'/../data/' + file)
 
-
-write_to_file(sys.path[0]+'/../data/words.json', json.dumps(words))
+print('========================')
+write_to_file(sys.path[0]+'/../data/' + file, json.dumps(words))
 print(json.dumps(words))
