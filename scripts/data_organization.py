@@ -2,6 +2,9 @@ import sys
 import json
 from typing import List
 
+# ===============
+# FUNCTIONS
+# ===============
 
 #converts a file with a word on every line to a json object
 def list_to_json(file_path):
