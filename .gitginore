@@ -1,2 +1,4 @@
 /data/words/*
-/datat/words_short/*
+/data/words_short/*
+/data/words_short_json/*
+/data/words_json/*
